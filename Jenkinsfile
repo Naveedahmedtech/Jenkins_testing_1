@@ -32,11 +32,11 @@ pipeline {
     }
 
     post {
-        always {
-            archiveArtifacts artifacts: '**/build/**/*', allowEmptyArchive: true
+        success {
+            githubNotify context: 'Jenkins/NodeJS-Pipeline-Job', status: 'SUCCESS'
         }
         failure {
-            mail to: 'team@example.com', subject: "Build Failed", body: "Please check the Jenkins build logs."
+            githubNotify context: 'Jenkins/NodeJS-Pipeline-Job', status: 'FAILURE'
         }
     }
 }
