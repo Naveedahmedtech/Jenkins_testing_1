@@ -20,7 +20,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat 'npm test'  
+                bat 'npm test'
             }
         }
 
@@ -33,10 +33,20 @@ pipeline {
 
     post {
         success {
-            githubNotify context: 'Jenkins/NodeJS-Testing-Pipeline', status: 'SUCCESS', description: 'Build and tests succeeded'
+            githubNotify context: 'Jenkins/NodeJS-Testing-Pipeline', 
+                         status: 'SUCCESS', 
+                         description: 'Build and tests succeeded',
+                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
+                         sha: "${env.GIT_COMMIT}", 
+                         credentialsId: 'github-pat'
         }
         failure {
-            githubNotify context: 'Jenkins/NodeJS-Testing-Pipeline', status: 'FAILURE', description: 'Build or tests failed'
+            githubNotify context: 'Jenkins/NodeJS-Testing-Pipeline', 
+                         status: 'FAILURE', 
+                         description: 'Build or tests failed',
+                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
+                         sha: "${env.GIT_COMMIT}", 
+                         credentialsId: 'github-pat'
         }
     }
 }
