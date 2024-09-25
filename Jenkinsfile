@@ -1,11 +1,24 @@
 void setBuildStatus(String message, String state) {
     step([
-        $class: "GitHubCommitStatusSetter",
-        reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/Naveedahmedtech/Jenkins_testing_1"],
-        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
-        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
-    ]);
+        $class: 'GitHubCommitStatusSetter',
+        reposSource: [
+            $class: 'ManuallyEnteredRepositorySource',
+            url: 'https://github.com/Naveedahmedtech/Jenkins_testing_1'
+        ],
+        contextSource: [
+            $class: 'ManuallyEnteredCommitContextSource',
+            context: 'ci/jenkins/build-status'
+        ],
+        errorHandlers: [
+            [$class: 'ChangingBuildStatusErrorHandler', result: 'UNSTABLE']
+        ],
+        statusResultSource: [
+            $class: 'ConditionalStatusResultSource',
+            results: [
+                [$class: 'AnyBuildResult', message: message, state: state]
+            ]
+        ]
+    ])
 }
 
 pipeline {
@@ -13,6 +26,18 @@ pipeline {
 
     tools {
         nodejs 'nodeJS'
+    }
+
+    stage('PR Event') {
+            steps {
+                script {
+                    if (env.CHANGE_ID) {
+                        echo "This is a Pull Request: ${env.CHANGE_ID}"
+                    } else {
+                        echo 'This is not a Pull Request'
+                    }
+                }
+            }
     }
 
     stages {
@@ -43,10 +68,10 @@ pipeline {
 
     post {
         success {
-            setBuildStatus("Build succeeded", "SUCCESS")
+            setBuildStatus('Build succeeded', 'SUCCESS')
         }
         failure {
-            setBuildStatus("Build failed", "FAILURE")
+            setBuildStatus('Build failed', 'FAILURE')
         }
     }
 }
