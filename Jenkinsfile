@@ -33,10 +33,10 @@ pipeline {
 
     post {
         success {
-            githubNotify context: 'Jenkins/NodeJS-Pipeline-Job', status: 'SUCCESS'
+            githubNotify context: 'Jenkins/NodeJS-Pipeline-Job', status: 'SUCCESS', description: 'Build and tests succeeded'
         }
         failure {
-            githubNotify context: 'Jenkins/NodeJS-Pipeline-Job', status: 'FAILURE'
+            githubNotify context: 'Jenkins/NodeJS-Pipeline-Job', status: 'FAILURE', description: 'Build or tests failed'
         }
     }
 }
