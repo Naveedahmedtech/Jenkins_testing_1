@@ -28,6 +28,18 @@ pipeline {
         nodejs 'nodeJS'
     }
 
+    stage('PR Event') {
+            steps {
+                script {
+                    if (env.CHANGE_ID) {
+                        echo "This is a Pull Request: ${env.CHANGE_ID}"
+                    } else {
+                        echo 'This is not a Pull Request'
+                    }
+                }
+            }
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
