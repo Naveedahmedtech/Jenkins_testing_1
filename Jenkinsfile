@@ -1,3 +1,13 @@
+void setBuildStatus(String message, String state) {
+    step([
+        $class: "GitHubCommitStatusSetter",
+        reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/Naveedahmedtech/Jenkins_testing_1"],
+        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+        statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+    ]);
+}
+
 pipeline {
     agent any
 
@@ -33,20 +43,10 @@ pipeline {
 
     post {
         success {
-            githubNotify context: 'Jenkins/NodeJS-Testing-Pipeline', 
-                         status: 'SUCCESS', 
-                         description: 'Build and tests succeeded',
-                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
-                         sha: "${env.GIT_COMMIT}", 
-                         credentialsId: 'github-pat'
+            setBuildStatus("Build succeeded", "SUCCESS")
         }
         failure {
-            githubNotify context: 'Jenkins/NodeJS-Testing-Pipeline', 
-                         status: 'FAILURE', 
-                         description: 'Build or tests failed',
-                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
-                         sha: "${env.GIT_COMMIT}", 
-                         credentialsId: 'github-pat'
+            setBuildStatus("Build failed", "FAILURE")
         }
     }
 }
