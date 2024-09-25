@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo 'Running tests...' && exit 0",
+    "test": "echo 'Running tests...' && exit 1",
     "build": "echo 'Building project...' && exit 0"
   },
   "keywords": [],

@@ -20,7 +20,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat 'npm test'  // Jenkins will fail if this step fails
+                bat 'npm test'  
             }
         }
 
