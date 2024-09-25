@@ -1,26 +1,25 @@
 void setBuildStatus(String message, String state) {
     step([
-        $class: "GitHubCommitStatusSetter",
+        $class: 'GitHubCommitStatusSetter',
         reposSource: [
-            $class: "ManuallyEnteredRepositorySource", 
-            url: "https://github.com/Naveedahmedtech/Jenkins_testing_1"
+            $class: 'ManuallyEnteredRepositorySource',
+            url: 'https://github.com/Naveedahmedtech/Jenkins_testing_1'
         ],
         contextSource: [
-            $class: "ManuallyEnteredCommitContextSource", 
-            context: "ci/jenkins/build-status"
+            $class: 'ManuallyEnteredCommitContextSource',
+            context: 'ci/jenkins/build-status'
         ],
         errorHandlers: [
-            [$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]
+            [$class: 'ChangingBuildStatusErrorHandler', result: 'UNSTABLE']
         ],
-        statusResultSource: [ 
-            $class: "ConditionalStatusResultSource", 
+        statusResultSource: [
+            $class: 'ConditionalStatusResultSource',
             results: [
-                [$class: "AnyBuildResult", message: message, state: state]
-            ] 
+                [$class: 'AnyBuildResult', message: message, state: state]
+            ]
         ]
-    ]);
+    ])
 }
-
 
 pipeline {
     agent any
@@ -57,10 +56,10 @@ pipeline {
 
     post {
         success {
-            setBuildStatus("Build succeeded", "SUCCESS")
+            setBuildStatus('Build succeeded', 'SUCCESS')
         }
         failure {
-            setBuildStatus("Build failed", "FAILURE")
+            setBuildStatus('Build failed', 'FAILURE')
         }
     }
 }
