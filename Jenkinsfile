@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'master', url: 'git@github.com:Naveedahmedtech/NodeJS-Simple-Job.git'
+                git branch: 'master', url: 'git@github.com:Naveedahmedtech/Jenkins_testing_1.git'
             }
         }
 
