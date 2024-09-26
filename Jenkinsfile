@@ -41,7 +41,7 @@ pipeline {
                          description: 'Build and tests succeeded', 
                          repo: 'Naveedahmedtech/Jenkins_testing_1', 
                          sha: "${env.GIT_COMMIT}", 
-                         credentialsId: 'github-credentials'
+                         credentialsId: 'github-pat'
         }
         failure {
             githubNotify context: 'ci/jenkins/build-status', 
@@ -49,7 +49,7 @@ pipeline {
                          description: 'Build or tests failed', 
                          repo: 'Naveedahmedtech/Jenkins_testing_1', 
                          sha: "${env.GIT_COMMIT}", 
-                         credentialsId: 'github-credentials'
+                         credentialsId: 'github-pat'
         }
     }
 }
