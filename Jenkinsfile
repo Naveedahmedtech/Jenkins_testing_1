@@ -28,22 +28,14 @@ pipeline {
         nodejs 'nodeJS'
     }
 
-    stage('PR Event') {
-            steps {
-                script {
-                    if (env.CHANGE_ID) {
-                        echo "This is a Pull Request: ${env.CHANGE_ID}"
-                    } else {
-                        echo 'This is not a Pull Request'
-                    }
-                }
-            }
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'master', url: 'git@github.com:Naveedahmedtech/Jenkins_testing_1.git'
+                script {
+                    def scmVars = checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
+                        userRemoteConfigs: [[url: 'git@github.com:Naveedahmedtech/Jenkins_testing_1.git']]])
+                    env.GIT_COMMIT = scmVars.GIT_COMMIT
+                }
             }
         }
 
