@@ -3,7 +3,7 @@ void setBuildStatus(String message, String state) {
         $class: 'GitHubCommitStatusSetter',
         reposSource: [
             $class: 'ManuallyEnteredRepositorySource',
-            url: 'git@github.com:Naveedahmedtech/Jenkins_testing_1.git'
+            url: 'https://github.com/Naveedahmedtech/Jenkins_testing_1.git'
         ],
         contextSource: [
             $class: 'ManuallyEnteredCommitContextSource',
