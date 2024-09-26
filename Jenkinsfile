@@ -1,55 +1,40 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'nodeJS'
-    }
-
     stages {
-        stage('Checkout Code') {
+        stage('Notify GitHub (Pending)') {
             steps {
-                script {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
-                        userRemoteConfigs: [[url: 'git@github.com:Naveedahmedtech/Jenkins_testing_1.git']]])
-                }
+                githubNotify context: 'CI', status: 'PENDING', description: 'Build is starting'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm install'
+                sh 'npm install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'npm test'
-            }
-        }
-
-        stage('Build Application') {
-            steps {
-                bat 'npm run build'
+                script {
+                    try {
+                        sh 'npm test'
+                        githubNotify context: 'CI', status: 'SUCCESS', description: 'Tests passed'
+                    } catch (Exception e) {
+                        githubNotify context: 'CI', status: 'FAILURE', description: 'Tests failed'
+                        throw e // Re-throw the error to fail the pipeline
+                    }
+                }
             }
         }
     }
 
     post {
-        success {
-            githubNotify context: 'ci/jenkins/build-status', 
-                         status: 'SUCCESS', 
-                         description: 'Build and tests succeeded', 
-                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
-                         sha: "${env.GIT_COMMIT}", 
-                         credentialsId: 'github-pat'
-        }
         failure {
-            githubNotify context: 'ci/jenkins/build-status', 
-                         status: 'FAILURE', 
-                         description: 'Build or tests failed', 
-                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
-                         sha: "${env.GIT_COMMIT}", 
-                         credentialsId: 'github-pat'
+            githubNotify context: 'CI', status: 'FAILURE', description: 'Build failed'
+        }
+        success {
+            githubNotify context: 'CI', status: 'SUCCESS', description: 'Build succeeded'
         }
     }
 }
