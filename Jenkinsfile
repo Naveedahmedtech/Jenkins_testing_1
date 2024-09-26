@@ -1,10 +1,19 @@
 pipeline {
     agent any
 
+    environment {
+        GIT_REPO = 'git@github.com:Naveedahmedtech/Jenkins_testing_1.git' // Your GitHub repo
+        GIT_CREDENTIALS = 'github-pat' // Use the credentials ID from the previous step
+    }
+
     stages {
         stage('Notify GitHub (Pending)') {
             steps {
-                githubNotify context: 'CI', status: 'PENDING', description: 'Build is starting'
+                script {
+                    // Set GitHub commit status to pending at the beginning of the build
+                    githubNotify context: 'CI', status: 'PENDING', description: 'Build is starting',
+                                 repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
+                }
             }
         }
 
@@ -19,9 +28,13 @@ pipeline {
                 script {
                     try {
                         sh 'npm test'
-                        githubNotify context: 'CI', status: 'SUCCESS', description: 'Tests passed'
+                        // Notify GitHub about successful build
+                        githubNotify context: 'CI', status: 'SUCCESS', description: 'Tests passed',
+                                     repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
                     } catch (Exception e) {
-                        githubNotify context: 'CI', status: 'FAILURE', description: 'Tests failed'
+                        // Notify GitHub about failed build
+                        githubNotify context: 'CI', status: 'FAILURE', description: 'Tests failed',
+                                     repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
                         throw e // Re-throw the error to fail the pipeline
                     }
                 }
@@ -31,10 +44,14 @@ pipeline {
 
     post {
         failure {
-            githubNotify context: 'CI', status: 'FAILURE', description: 'Build failed'
+            // Notify GitHub about failure in post-actions
+            githubNotify context: 'CI', status: 'FAILURE', description: 'Build failed',
+                         repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
         }
         success {
-            githubNotify context: 'CI', status: 'SUCCESS', description: 'Build succeeded'
+            // Notify GitHub about success in post-actions
+            githubNotify context: 'CI', status: 'SUCCESS', description: 'Build succeeded',
+                         repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
         }
     }
 }
