@@ -1,26 +1,3 @@
-void setBuildStatus(String message, String state) {
-    step([
-        $class: 'GitHubCommitStatusSetter',
-        reposSource: [
-            $class: 'ManuallyEnteredRepositorySource',
-            url: 'https://github.com/Naveedahmedtech/Jenkins_testing_1.git'
-        ],
-        contextSource: [
-            $class: 'ManuallyEnteredCommitContextSource',
-            context: 'ci/jenkins/build-status'
-        ],
-        errorHandlers: [
-            [$class: 'ChangingBuildStatusErrorHandler', result: 'UNSTABLE']
-        ],
-        statusResultSource: [
-            $class: 'ConditionalStatusResultSource',
-            results: [
-                [$class: 'AnyBuildResult', message: message, state: state]
-            ]
-        ]
-    ])
-}
-
 pipeline {
     agent any
 
@@ -32,9 +9,8 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 script {
-                    def scmVars = checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
+                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
                         userRemoteConfigs: [[url: 'git@github.com:Naveedahmedtech/Jenkins_testing_1.git']]])
-                    env.GIT_COMMIT = scmVars.GIT_COMMIT
                 }
             }
         }
@@ -60,10 +36,20 @@ pipeline {
 
     post {
         success {
-            setBuildStatus('Build succeeded', 'SUCCESS')
+            githubNotify context: 'ci/jenkins/build-status', 
+                         status: 'SUCCESS', 
+                         description: 'Build and tests succeeded', 
+                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
+                         sha: "${env.GIT_COMMIT}", 
+                         credentialsId: 'github-credentials'
         }
         failure {
-            setBuildStatus('Build failed', 'FAILURE')
+            githubNotify context: 'ci/jenkins/build-status', 
+                         status: 'FAILURE', 
+                         description: 'Build or tests failed', 
+                         repo: 'Naveedahmedtech/Jenkins_testing_1', 
+                         sha: "${env.GIT_COMMIT}", 
+                         credentialsId: 'github-credentials'
         }
     }
 }
