@@ -10,8 +10,8 @@ pipeline {
         stage('Notify GitHub (Pending)') {
             steps {
                 script {
-                    githubNotify context: 'CI', status: 'PENDING', description: 'Build is starting',
-                                 repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
+                    githubNotify context: 'CI', status: 'PENDING', description: 'Build is starting', 
+                    repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
                 }
             }
         }
@@ -40,11 +40,11 @@ pipeline {
     post {
         failure {
             githubNotify context: 'CI', status: 'FAILURE', description: 'Build failed',
-                         repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
+             repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
         }
         success {
             githubNotify context: 'CI', status: 'SUCCESS', description: 'Build succeeded',
-                         repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
+             repo: GIT_REPO, credentialsId: GIT_CREDENTIALS
         }
     }
 }
